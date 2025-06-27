@@ -4,6 +4,13 @@ export enum TicketStatus {
   CLOSED = 'FECHADO'
 }
 
+export enum TicketPriority {
+  LOW = 'BAIXA',
+  MEDIUM = 'MÉDIA',
+  HIGH = 'ALTA',
+  URGENT = 'URGENTE'
+}
+
 export interface Player {
   id: number;
   name: string;
@@ -31,6 +38,7 @@ export interface Ticket {
   title: string;
   description: string;
   status: TicketStatus;
+  priority: TicketPriority;
   createdAt: number;
   updatedAt: number;
   messages: Message[];

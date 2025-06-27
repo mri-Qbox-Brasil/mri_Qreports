@@ -91,6 +91,7 @@ const TicketsPage: React.FC = () => {
                 <TicketList
                   onSelectTicket={handleSelectTicket}
                   selectedTicketId={selectedTicketId || undefined}
+                  maxHeight="auto"
                 />
               </TabPanel>
               <TabPanel value={tabValue} index={1}>

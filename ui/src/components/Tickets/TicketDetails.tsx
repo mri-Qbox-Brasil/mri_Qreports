@@ -266,8 +266,8 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({ ticketId, onClose }) => {
         Chat
       </Typography>
 
-      <Box sx={{ flex: 1, minHeight: 0 }}>
-        <ChatBox ticketId={ticketId} height="100%" />
+      <Box sx={{ flex: 1, minHeight: 40 }}>
+        <ChatBox ticketId={ticketId}/>
       </Box>
     </Box>
   );

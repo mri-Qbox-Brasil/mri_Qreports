@@ -229,8 +229,8 @@ const HomePage: React.FC = () => {
 
             <Divider sx={{ mb: 2 }} />
 
-            <Box sx={{ flex: 1 }}>
-              <ChatBox isStaffChat={true} height="100%" />
+            <Box sx={{ flex: 1, overflow: "hidden" }}>
+              <ChatBox isStaffChat={true} />
             </Box>
           </Paper>
         </Box>

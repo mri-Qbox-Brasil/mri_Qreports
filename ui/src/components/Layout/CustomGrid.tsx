@@ -2,7 +2,6 @@ import React from "react";
 import { Box } from "@mui/material";
 import type { BoxProps } from "@mui/material";
 
-// Container Grid
 export const GridContainer: React.FC<React.PropsWithChildren<BoxProps>> = ({
   children,
   ...rest

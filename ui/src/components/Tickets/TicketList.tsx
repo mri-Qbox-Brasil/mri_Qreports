@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   List,
   ListItem,
@@ -11,7 +11,11 @@ import {
   Paper,
   Divider,
   ListItemButton,
+  Fab,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import NewTicketForm from "./NewTicketForm";
+import { isEnvBrowser } from "../../utils/misc";
 import { styled } from "@mui/material/styles";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -25,6 +29,13 @@ const StyledListItem = styled(ListItemButton)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(1),
   transition: "all 0.2s ease",
+  padding: theme.spacing(1),
+  [theme.breakpoints.up('sm')]: {
+    padding: theme.spacing(1, 2),
+  },
+  [theme.breakpoints.up('md')]: {
+    padding: theme.spacing(1.5, 2),
+  },
   "&:hover": {
     backgroundColor: "rgba(255, 255, 255, 0.05)",
     transform: "translateY(-2px)",
@@ -36,6 +47,7 @@ interface TicketListProps {
   status?: TicketStatus;
   onSelectTicket: (ticketId: string) => void;
   selectedTicketId?: string;
+  maxHeight?: string;
 }
 
 const getStatusIcon = (status: TicketStatus) => {
@@ -83,13 +95,25 @@ const TicketList: React.FC<TicketListProps> = ({
   status,
   onSelectTicket,
   selectedTicketId,
+  maxHeight,
 }) => {
-  const tickets = useTicketStore((state: any) => {
+  const [openNewTicketForm, setOpenNewTicketForm] = useState(false);
+  const isBrowser = isEnvBrowser();
+  
+  const tickets = useTicketStore((state) => {
     if (status) {
       return state.getTicketsByStatus(status);
     }
     return state.tickets;
   });
+  
+  const handleOpenNewTicketForm = () => {
+    setOpenNewTicketForm(true);
+  };
+  
+  const handleCloseNewTicketForm = () => {
+    setOpenNewTicketForm(false);
+  };
 
   if (tickets.length === 0) {
     return (
@@ -116,16 +140,20 @@ const TicketList: React.FC<TicketListProps> = ({
   }
 
   return (
-    <Paper
-      elevation={2}
-      sx={{
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
-        borderRadius: 2,
-        overflow: "hidden",
-      }}
-    >
-      <List sx={{ width: "100%", p: 0 }}>
-        {tickets.map((ticket: Ticket, index: number) => (
+    <Box sx={{ position: 'relative', height: '100%', maxHeight: maxHeight, display: 'flex', flexDirection: 'column' }}>
+      <Paper
+        elevation={2}
+        sx={{
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+          borderRadius: 2,
+          overflow: "hidden",
+          flex: 1,
+          maxHeight: '100%',
+          position: 'relative',
+        }}
+      >
+        <List sx={{ width: "100%", p: 0 }}>
+          {tickets.map((ticket: Ticket, index: number) => (
           <React.Fragment key={ticket.id}>
             <ListItem
               disablePadding
@@ -162,7 +190,15 @@ const TicketList: React.FC<TicketListProps> = ({
                       <Typography
                         variant="subtitle1"
                         color="text.primary"
-                        sx={{ fontWeight: 600 }}
+                        sx={{ 
+                          fontWeight: 600,
+                          fontSize: {
+                            xs: '0.875rem',
+                            sm: '1rem',
+                            md: '1.1rem',
+                          },
+                          lineHeight: 1.2,
+                        }}
                       >
                         {ticket.title}
                       </Typography>
@@ -175,7 +211,15 @@ const TicketList: React.FC<TicketListProps> = ({
                         component="span"
                         variant="body2"
                         color="text.primary"
-                        sx={{ display: "block", mb: 0.5 }}
+                        sx={{ 
+                          display: "block", 
+                          mb: 0.5,
+                          fontSize: {
+                            xs: '0.75rem',
+                            sm: '0.8rem',
+                            md: '0.875rem',
+                          },
+                        }}
                       >
                         {ticket.playerName} - ID: {ticket.playerId}
                       </Typography>
@@ -183,10 +227,25 @@ const TicketList: React.FC<TicketListProps> = ({
                         component="span"
                         variant="body2"
                         color="text.secondary"
-                        sx={{ display: "block", mb: 0.5 }}
+                        sx={{ 
+                          mb: 0.5,
+                          fontSize: {
+                            xs: '0.7rem',
+                            sm: '0.75rem',
+                            md: '0.8rem',
+                          },
+                          display: '-webkit-box',
+                          WebkitLineClamp: {
+                            xs: 2,
+                            sm: 2,
+                            md: 3,
+                          },
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
                       >
-                        {ticket.description.substring(0, 80)}
-                        {ticket.description.length > 80 ? "..." : ""}
+                        {ticket.description}
                       </Typography>
                       <Box
                         display="flex"
@@ -198,6 +257,13 @@ const TicketList: React.FC<TicketListProps> = ({
                           component="span"
                           variant="caption"
                           color="text.secondary"
+                          sx={{ 
+                            fontSize: {
+                              xs: '0.65rem',
+                              sm: '0.7rem',
+                              md: '0.75rem',
+                            },
+                          }}
                         >
                           Criado: {formatDate(ticket.createdAt)}
                         </Typography>
@@ -206,6 +272,13 @@ const TicketList: React.FC<TicketListProps> = ({
                             component="span"
                             variant="caption"
                             color="text.secondary"
+                            sx={{ 
+                              fontSize: {
+                                xs: '0.65rem',
+                                sm: '0.7rem',
+                                md: '0.75rem',
+                              },
+                            }}
                           >
                             Atribuído a: {ticket.assignedTo.name}
                           </Typography>
@@ -226,7 +299,29 @@ const TicketList: React.FC<TicketListProps> = ({
           </React.Fragment>
         ))}
       </List>
-    </Paper>
+      </Paper>
+      
+      {/* SOMENTE BROWSER PRA TESTE NOVO TICKET */}
+      {isBrowser && (
+        <Fab 
+          color="primary" 
+          aria-label="add" 
+          onClick={handleOpenNewTicketForm}
+          sx={{ 
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+          }}
+        >
+          <AddIcon />
+        </Fab>
+      )}
+      
+      <NewTicketForm 
+        open={openNewTicketForm} 
+        onClose={handleCloseNewTicketForm} 
+      />
+    </Box>
   );
 };
 

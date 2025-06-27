@@ -1,12 +1,14 @@
 import { Typography, createTheme, styled } from "@mui/material";
 
+
+
 export const baseTheme = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     primary: {
-      main: "#40c057",
-      light: "#f0c972",
-      dark: "#b38d2e",
+      main: "#40c057", // Cor padrão que será substituída pela configuração
+      light: "#66cf7b",
+      dark: "#2d8a3e",
       contrastText: "#111",
     },
     secondary: {
@@ -74,7 +76,7 @@ const theme = createTheme({
     values: {
       xs: 0,
       sm: 720, // 720p
-      md: 1100, // Resolução PVPAS
+      md: 1100, // Resolução ZAP PVPAS
       lg: 1366, // 768p
       xl: 1920, // 1080p
     },
